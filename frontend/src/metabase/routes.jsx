@@ -69,6 +69,7 @@ import GroupDetailApp from "metabase/admin/people/containers/GroupDetailApp.jsx"
 
 import PublicQuestion from "metabase/public/containers/PublicQuestion.jsx";
 import PublicDashboard from "metabase/public/containers/PublicDashboard.jsx";
+import { getUser } from "metabase/selectors/user";
 
 const MetabaseIsSetup = UserAuthWrapper({
     predicate: authData => !authData.hasSetupToken,
@@ -90,7 +91,7 @@ const UserIsAuthenticated = UserAuthWrapper({
             ...location,
             query: {
                 ...location.query,
-                redirect: location.query.redirect + (window.location.hash || "")
+                redirect: location.query.redirect + ((window && window.location.hash) || "")
             }
         })
 });
@@ -134,7 +135,9 @@ export const getRoutes = (store) =>
 
         {/* APP */}
         <Route onEnter={async (nextState, replace, done) => {
-            await store.dispatch(loadCurrentUser());
+            if (!getUser(store.getState())) {
+                await store.dispatch(loadCurrentUser())
+            }
             done();
         }}>
             {/* AUTH */}

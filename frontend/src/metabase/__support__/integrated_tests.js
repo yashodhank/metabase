@@ -9,7 +9,32 @@ import { Provider } from 'react-redux';
 
 import { createMemoryHistory } from 'history'
 import { getStore } from "metabase/store";
-import { useRouterHistory } from "react-router";
+import { Router, useRouterHistory } from "react-router";
+import { getRoutes } from "metabase/routes";
+
+global.ace = {
+    define: () => {}
+}
+
+jest.mock("ace/ace", () => {}, {virtual: true});
+jest.mock("ace/mode-plain_text", () => {}, {virtual: true});
+jest.mock("ace/mode-javascript", () => {}, {virtual: true});
+jest.mock("ace/mode-json", () => {}, {virtual: true});
+jest.mock("ace/mode-clojure", () => {}, {virtual: true});
+jest.mock("ace/mode-ruby", () => {}, {virtual: true});
+jest.mock("ace/mode-html", () => {}, {virtual: true});
+jest.mock("ace/mode-jsx", () => {}, {virtual: true});
+jest.mock("ace/mode-sql", () => {}, {virtual: true});
+jest.mock("ace/mode-mysql", () => {}, {virtual: true});
+jest.mock("ace/mode-pgsql", () => {}, {virtual: true});
+jest.mock("ace/mode-sqlserver", () => {}, {virtual: true});
+jest.mock("ace/snippets/sql", () => {}, {virtual: true});
+jest.mock("ace/snippets/mysql", () => {}, {virtual: true});
+jest.mock("ace/snippets/pgsql", () => {}, {virtual: true});
+jest.mock("ace/snippets/sqlserver", () => {}, {virtual: true});
+jest.mock("ace/snippets/json", () => {}, {virtual: true});
+jest.mock("ace/snippets/json", () => {}, {virtual: true});
+jest.mock("ace/ext-language_tools", () => {}, {virtual: true});
 
 // Stores the current login session
 var loginSession = null;
@@ -80,6 +105,17 @@ export const createReduxStoreWithBrowserHistory = () => {
     return { history, store }
 }
 
+
+/**
+ * A Redux store that is shared between subsequent tests,
+ * intended to reduce the need for reloading metadata between every test
+ */
+const {
+    history: globalBrowserHistory,
+    store: globalReduxStore
+} = createReduxStoreWithBrowserHistory()
+export { globalBrowserHistory, globalReduxStore }
+
 /**
  * Returns the given React container with an access to a global Redux store
  */
@@ -91,15 +127,15 @@ export function linkContainerToGlobalReduxStore(component) {
     );
 }
 
-/**
- * A Redux store that is shared between subsequent tests,
- * intended to reduce the need for reloading metadata between every test
- */
-const {
-    history: globalBrowserHistory,
-    store: globalReduxStore
-} = createReduxStoreWithBrowserHistory()
-export { globalBrowserHistory, globalReduxStore }
+const routes = getRoutes(globalReduxStore);
+export function getAppContainer() {
+    return linkContainerToGlobalReduxStore(
+        <Router history={globalBrowserHistory}>
+            {routes}
+        </Router>
+    )
+}
+
 
 // TODO: How to have the high timeout interval only for integration tests?
 // or even better, just for the setup/teardown of server process?

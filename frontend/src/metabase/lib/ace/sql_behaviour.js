@@ -34,7 +34,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-ace.require(["ace/lib/oop", "ace/mode/behaviour", "ace/token_iterator", "ace/lib/lang"],
+ace.require && ace.require(["ace/lib/oop", "ace/mode/behaviour", "ace/token_iterator", "ace/lib/lang"],
 function(oop, { Behaviour }, { TokenIterator }, lang) {
 
     var SAFE_INSERT_IN_TOKENS =
