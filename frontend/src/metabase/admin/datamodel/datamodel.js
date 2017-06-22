@@ -34,7 +34,7 @@ export const initializeMetadata = createThunkAction(INITIALIZE_METADATA, functio
         }
 
         if (database) {
-            dispatch(fetchDatabaseIdfields(database.id));
+            await dispatch(fetchDatabaseIdfields(database.id));
         }
 
         return {
