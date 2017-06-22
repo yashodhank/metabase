@@ -12,9 +12,7 @@ import { getStore } from "metabase/store";
 import { Router, useRouterHistory } from "react-router";
 import { getRoutes } from "metabase/routes";
 
-global.ace = {
-    define: () => {}
-}
+global.ga = () => {}
 
 jest.mock("ace/ace", () => {}, {virtual: true});
 jest.mock("ace/mode-plain_text", () => {}, {virtual: true});
@@ -63,7 +61,9 @@ api._makeRequest = async (method, url, headers, body, data, options) => {
 
     const result = await fetch(api.basename + url, fetchOptions);
     if (result.status >= 200 && result.status <= 299) {
-        return result.json();
+        let response = await result.text();
+        try { response = JSON.parse(response) } catch(e) { }
+        return response;
     } else {
         const error = {status: result.status, data: await result.json()}
         console.log('A request made in a test failed with the following error:')

@@ -55,10 +55,9 @@ describe("admin/settings", () => {
 
             // wait for the loading indicator to show success
             // TODO: Is this the best way to "wait" in Enzyme tests for our needs?
-            // await waitFor(".SettingsInput");
-            await timeout(3000);
+            await waitFor(".SaveStatus.text-success");
 
-            // see if the value is persisted still after page change
+            // see if the value has actually changed by changing the page and returning to settings page
             history.push("/");
             history.push("/admin/settings/general");
 

@@ -197,7 +197,8 @@
       "<rootDir>/frontend/test/metabase-bootstrap.js"
     ],
     "globals": {
-      "ace": {}
+      "ace": {},
+      "ga": {}
     }
   }
 }
